@@ -18,10 +18,21 @@ searchButton.addEventListener("click", (event) => {
   if (city) {
     document.getElementById("search-input").value = "";
     fetchCities(searchButton);
+  function saveSearches() {
+    var savedCities = document.getElementById("saved-searches");
+    retrievedData = JSON.parse(localStorage.getItem("cities"));
+    for (i = 0; i < cityList.length; i++) {
+    var cityButtons = document.createElement("button");
+      cityButtons.innerHTML = cityList[i];
+      console.log(cityList[i]);
+    }
+  savedCities.append(cityButtons);
+};
   }
+saveSearches(); 
 
 
-
+function fetchCities() {
   var weatherTest = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b"
   var mainForecast = document.getElementById("forecast-main");
   mainForecast.innerHTML = "";
@@ -114,23 +125,6 @@ searchButton.addEventListener("click", (event) => {
           temperatureList.textContent = "Temperature: " + dailyTemperature + "°C, High: " + highTemperature + "°C, Low: " + lowTemperature + "°C";
         }
   });
-
-  function saveSearches() {
-    var savedCities = document.getElementById("saved-searches");
-    retrievedData = JSON.parse(localStorage.getItem("cities"));
-    for (i = 0; i < cityList.length; i++) {
-    var cityButtons = document.createElement("button");
-      cityButtons.innerHTML = cityList[i];
-      console.log(cityList[i]);
-
-    }
-  savedCities.append(cityButtons);
-  }
- saveSearches()
-
-
-
-
-
-  })
 });
+}
+})
