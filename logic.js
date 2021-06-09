@@ -8,13 +8,26 @@
 
 
 var searchButton = document.getElementById("search-button");
+var cityList = JSON.parse(localStorage.getItem("cities"))||[];
+
 
 searchButton.addEventListener("click", (event) => {
   event.preventDefault();
   var city = document.getElementById("search-input").value; 
   console.log(city);
-  var weatherTest = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b"
+  if (city) {
+    document.getElementById("search-input").value = "";
+    fetchCities(searchButton);
+  }
 
+
+
+  var weatherTest = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b"
+  var mainForecast = document.getElementById("forecast-main");
+  mainForecast.innerHTML = "";
+  cityList.push(city);
+  console.log(cityList);
+  localStorage.setItem("cities", JSON.stringify(cityList));
 
   fetch(weatherTest)
   .then(function (response) {
@@ -26,7 +39,11 @@ searchButton.addEventListener("click", (event) => {
     console.log(data["coord"]["lon"])
     var latitude = data["coord"]["lat"];
     var longitude = data["coord"]["lon"];
+    var cityName = data.name;
     console.log(latitude, longitude);
+    var heading = document.createElement("h1");
+    heading.innerHTML = "Weather Forecast for  " + cityName + ": " 
+    mainForecast.appendChild(heading);
 
     var weatherTwo = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b";
     fetch(weatherTwo)
@@ -47,7 +64,7 @@ searchButton.addEventListener("click", (event) => {
         console.log(data.current.wind_speed)
       
         //current weather
-      var mainForecast = document.getElementById("forecast-main");
+      
       var forecastCard = document.createElement("div");
       forecastCard.classList.add("card");
       mainForecast.appendChild(forecastCard);
@@ -58,7 +75,10 @@ searchButton.addEventListener("click", (event) => {
       currentIcon.setAttribute("width", "100px");
       forecastCard.appendChild(currentIcon);
       var date = moment().format("dddd MMM Do");
+      var dateLine = document.createElement("h3");
+      dateLine.innerHTML = "Forecast for " + date;
       var currentWeather = document.createElement("p");
+      forecastCard.appendChild(dateLine);
       forecastCard.appendChild(currentWeather);
       var currentTemperature = data.current.temp;
       var currentWind = data.current.wind_speed;
@@ -71,7 +91,9 @@ searchButton.addEventListener("click", (event) => {
         for (i=0; i<5; i++) {
           var weatherInfo = document.createElement("p");
           var temperatureList = document.createElement("p");
+          var dateSpot = document.createElement("h3");
           var iconCall = data["daily"][i].weather[0].icon;
+          var forecastDate = moment().add((i + 1), 'day').format("dddd MMM Do");
           var weatherIcon = document.createElement("img");
           weatherIcon.setAttribute("src", "http://openweathermap.org/img/wn/" + iconCall + "@2x.png");
           weatherIcon.setAttribute("height", "50px");
@@ -82,7 +104,9 @@ searchButton.addEventListener("click", (event) => {
           var lowTemperature = data["daily"][i].temp.min;
           var highTemperature = data["daily"][i].temp.max;
           var windSpeed = data["daily"][i].wind_speed;
-          var humidity = data["daily"][i].humidity
+          var humidity = data["daily"][i].humidity;
+          forecastCard.appendChild(dateSpot);
+          dateSpot.innerHTML = "Forecast for " + forecastDate;
           forecastCard.appendChild(weatherIcon);
           forecastCard.appendChild(weatherInfo);
           weatherInfo.textContent = weatherDescription + ", Humidity: " + humidity + "%, Wind Speed: " + windSpeed + "km/h, UV Index: " + uvi;
@@ -91,9 +115,22 @@ searchButton.addEventListener("click", (event) => {
         }
   });
 
-  
-  //localStorage.setItem("finalScore", JSON.stringify(finalScore));
-  //localStorage.setItem("score-input", scoreInput.value, JSON.stringify(scoreInput.value));
+  function saveSearches() {
+    var savedCities = document.getElementById("saved-searches");
+    retrievedData = JSON.parse(localStorage.getItem("cities"));
+    for (i = 0; i < cityList.length; i++) {
+    var cityButtons = document.createElement("button");
+      cityButtons.innerHTML = cityList[i];
+      console.log(cityList[i]);
+
+    }
+  savedCities.append(cityButtons);
+  }
+ saveSearches()
+
+
+
+
 
   })
 });
