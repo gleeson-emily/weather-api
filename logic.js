@@ -9,46 +9,58 @@
 
 var searchButton = document.getElementById("search-button");
 var cityList = JSON.parse(localStorage.getItem("cities"))||[];
-var savedCities = document.getElementById("saved-searches");
 var city;
 
-var searchCities = function(event) {
-  event.preventDefault();
-      if (cityList == [""]) {
-      return;
-      } 
-    else { 
-    city = document.getElementById("search-input").value;
-    document.getElementById("search-input").value = "";
-  
-  function saveSearches() {
-    for (i = 0; i < cityList.length; i++) {
+function saveSearches() {
+  var savedCities = document.getElementById("saved-searches");
+  if (!cityList) {
+    return
+  };
+  if (city === null) {
+    return
+  };
+  for (i = 0; i < cityList.length; i++) {
     var cityButtons = document.createElement("button");
-      cityButtons.innerHTML = cityList[i];
-      console.log(cityList[i]);
-      cityButtons.addEventListener("click", event => {
-        event.preventDefault();
-        fetchCities(cityButtons);
-      })
-    }
-  savedCities.append(cityButtons);
-  }
-};
-saveSearches(); 
-fetchCities(); 
-};
+    console.log(cityList.length);
+    cityButtons.innerHTML = cityList[i];
+    console.log(cityList[i]);
+      console.log(city);
+      console.log(cityButtons.innerHTML)
+      savedCities.append(cityButtons); 
+}
+      
 
+cityButtons.addEventListener("click", event => {
+      event.preventDefault();
+      var saveCity = event.target.innerHTML
+       console.log(saveCity);
+       fetchCities(saveCity);
+});
+}
+
+searchButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  city = document.getElementById("search-input").value;
+  console.log(city);
+  if (city) {
+    document.getElementById("search-input").value = "";
+    fetchCities(searchButton);
+  }
+  else {
+    return
+  };
+  saveSearches(); 
+});
 
 function fetchCities() {
   var weatherTest = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b"
   var mainForecast = document.getElementById("forecast-main");
   mainForecast.innerHTML = "";
+
+  if (cityList.indexOf(city) == -1) {
+  cityList.push(city);
+   localStorage.setItem("cities", JSON.stringify(cityList));
   console.log(cityList);
-  if(cityList.indexOf(city) == -1){
-    cityList.push(city);
-     localStorage.setItem("cities", JSON.stringify(cityList));
-  } else {
-     return;
   }
 
   fetch(weatherTest)
@@ -139,5 +151,5 @@ function fetchCities() {
 });
 }
 
-searchButton.addEventListener('click', searchCities);
-window.addEventListener('load', searchCities);
+
+window.addEventListener ("load", saveSearches);
