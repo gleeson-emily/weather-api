@@ -6,14 +6,43 @@ body {
 .jumbotron {
     background-image: url(IMG_3815.JPG);
     background-size: cover;
-    min-height: 300px;
-    color:blanchedalmond;
+    min-height: 150px;
+}
+
+.jumbotron h1 {
+    padding-top: 20px;
+    color: white;
+}
+
+.search-container h4 {
+    color: rgb(87, 17, 17);
+}
+
+.search-container button {
+    background-color: burlywood;
+    color: rgb(87, 17, 17);
+    border-radius: 5px;
+}
+
+.search-container input {
+    background-color: rgb(250, 248, 245);
+    border-radius: 5px;
+}
+
+.previous-searches
+{
+    background-color: burlywood;
+    color: rgb(87, 17, 17);
+    border-radius: 5px;
+}
+
+.city-heading {
+    text-align: center;
 }
 
 .forecast {
     margin:auto;
     max-width: 800px;
-    background-color: rgb(252, 250, 244);
     border: solid gray 1px;
     border-radius: 10px;
 }

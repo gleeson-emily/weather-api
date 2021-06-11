@@ -8,6 +8,7 @@ var cityList = JSON.parse(localStorage.getItem("cities"));
 var city;
 
 function saveSearches() {
+  cityList = JSON.parse(localStorage.getItem("cities"))
   if (!cityList) {
     return
   } else {
@@ -38,8 +39,7 @@ savedCities.addEventListener("click", (event) => {
   event.stopPropagation();
   console.log(event.target.innerHTML);
   console.log(document.querySelector(".previous-searches").innerHTML)
-  fetchCities(city = document.querySelector(".previous-searches").innerHTML);
-  saveSearches();
+  fetchCities(city = event.target.innerHTML);
 });
 
 
@@ -70,6 +70,7 @@ function fetchCities() {
     var cityName = data.name;
     console.log(latitude, longitude);
     var heading = document.createElement("h1");
+    heading.classList.add("city-heading");
     heading.innerHTML = "Weather Forecast for  " + cityName + ": " 
     mainForecast.appendChild(heading);
     var weatherTwo = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b";
