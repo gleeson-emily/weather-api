@@ -79,32 +79,22 @@ function fetchCities() {
         return response.json();
       })
       .then(function (data) {
-        console.log(data);
-        console.log("this is daily weather", data.daily[1].weather[0].description)
-        console.log(data["daily"][0].weather[0])
-        console.log(data["daily"][1].temp.day)
-        console.log(data["daily"][0].wind_speed)
-        console.log(data["daily"][0].humidity)
-        console.log(data.current.temp)
-        console.log(data.current.humidity)
-        console.log(data.current.weather[0].description)
-        console.log(data.current.uvi)
-        console.log(data.current.wind_speed)
 
       //current weather
       var forecastCard = document.createElement("div");
       forecastCard.classList.add("card");
-      forecastCard.classList.add("forecast")
+      forecastCard.classList.add("forecast");
       mainForecast.appendChild(forecastCard);
       var currentIconCall = data.current.weather[0].icon;
       var currentIcon = document.createElement("img");
       currentIcon.setAttribute("src", "http://openweathermap.org/img/wn/" + currentIconCall + "@2x.png");
       currentIcon.setAttribute("height", "100px");
       currentIcon.setAttribute("width", "100px");
+      currentIcon.classList.add("center");
       forecastCard.appendChild(currentIcon);
-      var date = moment().format("dddd MMM Do");
+      var date = moment().format("dddd MMMM Do");
       var dateLine = document.createElement("h3");
-      dateLine.innerHTML = "Forecast for " + date;
+      dateLine.innerHTML = "Current conditions for " + date;
       var currentWeather = document.createElement("p");
       forecastCard.appendChild(dateLine);
       forecastCard.appendChild(currentWeather);
@@ -126,22 +116,24 @@ function fetchCities() {
           currentUv.classList.add("uv-extreme")
         }
         forecastCard.appendChild(currentUv);
-      currentWeather.textContent = currentConditions + ", " + currentTemperature + "°C, Humidity: " + currentHumidity + "%, Wind Speed: " + currentWind + "km/h,";
+      currentWeather.textContent = "Current conditions: " + currentConditions + ", " + currentTemperature + "°C, Humidity: " + currentHumidity + "%, Wind Speed: " + currentWind + "km/h";
       currentUv.textContent = "UV Index: " + currentUvi;
       //5-day forecast
         for (i=0; i<5; i++) {
           var futureCard = document.createElement("div");
           futureCard.classList.add("card");
           futureCard.classList.add("future-forecast");
+          mainForecast.appendChild(futureCard);
           var weatherInfo = document.createElement("p");
           var temperatureList = document.createElement("p");
           var dateSpot = document.createElement("h3");
           var iconCall = data["daily"][i].weather[0].icon;
-          var forecastDate = moment().add((i + 1), 'day').format("dddd MMM Do");
+          var forecastDate = moment().add((i + 1), 'day').format("dddd MMMM Do");
           var weatherIcon = document.createElement("img");
           weatherIcon.setAttribute("src", "http://openweathermap.org/img/wn/" + iconCall + "@2x.png");
-          weatherIcon.setAttribute("height", "50px");
-          weatherIcon.setAttribute("width", "50px");
+          weatherIcon.setAttribute("height", "100px");
+          weatherIcon.setAttribute("width", "100px");
+          weatherIcon.classList.add("center");
           var weatherDescription = data["daily"][i].weather[0].description;
           var uvi = data["daily"][i].uvi;
           var futureUvi = document.createElement("p");
@@ -161,14 +153,14 @@ function fetchCities() {
           var highTemperature = data["daily"][i].temp.max;
           var windSpeed = data["daily"][i].wind_speed;
           var humidity = data["daily"][i].humidity;
-          forecastCard.appendChild(dateSpot);
+          futureCard.appendChild(dateSpot);
           dateSpot.innerHTML = "Forecast for " + forecastDate;
-          forecastCard.appendChild(weatherIcon);
-          forecastCard.appendChild(weatherInfo);
-          weatherInfo.textContent = weatherDescription + ", Humidity: " + humidity + "%, Wind Speed: " + windSpeed + "km/h";
-          forecastCard.appendChild(temperatureList);
+          futureCard.appendChild(weatherIcon);
+          futureCard.appendChild(weatherInfo);
+          weatherInfo.textContent = "Forecasted conditions: " + weatherDescription + ", Humidity: " + humidity + "%, Wind Speed: " + windSpeed + "km/h";
+          futureCard.appendChild(temperatureList);
           temperatureList.textContent = "Temperature: " + dailyTemperature + "°C, High: " + highTemperature + "°C, Low: " + lowTemperature + "°C";
-          forecastCard.appendChild(futureUvi);
+          futureCard.appendChild(futureUvi);
           futureUvi.textContent = "UV Index: " + uvi}
   });
 });
