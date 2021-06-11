@@ -1,43 +1,27 @@
 //weather api key - 710fb85e67050a5a7ccb882b71cd1e8b
 //grab coordinates from weather call and plug that into the second api call for onecall (uv index)
-
-
 //var searchForm = document.getElementById("search-form");
-
 //console.log(searchForm);
-
-
 var searchButton = document.getElementById("search-button");
-var cityList = JSON.parse(localStorage.getItem("cities"))||[];
+var savedCities = document.getElementById("saved-searches");
+var cityList = JSON.parse(localStorage.getItem("cities"));
 var city;
 
 function saveSearches() {
-  var savedCities = document.getElementById("saved-searches");
   if (!cityList) {
     return
+  } else {
+    savedCities.innerHTML = ""
+    for (i = 0; i < cityList.length; i++) {
+      var cityButtons = document.createElement("button");
+      cityButtons.className = "previous-searches"
+      console.log(cityButtons);
+      cityButtons.innerHTML = cityList[i];
+      savedCities.append(cityButtons);
+      }
+    }
   };
-  if (city === null) {
-    return
-  };
-  for (i = 0; i < cityList.length; i++) {
-    var cityButtons = document.createElement("button");
-    console.log(cityList.length);
-    cityButtons.innerHTML = cityList[i];
-    console.log(cityList[i]);
-      console.log(city);
-      console.log(cityButtons.innerHTML)
-      savedCities.append(cityButtons); 
-}
-      
-
-cityButtons.addEventListener("click", event => {
-      event.preventDefault();
-      var saveCity = event.target.innerHTML
-       console.log(saveCity);
-       fetchCities(saveCity);
-});
-}
-
+  
 searchButton.addEventListener("click", (event) => {
   event.preventDefault();
   city = document.getElementById("search-input").value;
@@ -45,24 +29,34 @@ searchButton.addEventListener("click", (event) => {
   if (city) {
     document.getElementById("search-input").value = "";
     fetchCities(searchButton);
+    saveSearches(); 
   }
-  else {
-    return
-  };
-  saveSearches(); 
 });
+
+savedCities.addEventListener("click", (event) => {
+  event.preventDefault
+  event.stopPropagation();
+  console.log(event.target.innerHTML);
+  console.log(document.querySelector(".previous-searches").innerHTML)
+  fetchCities(city = document.querySelector(".previous-searches").innerHTML);
+  saveSearches();
+});
+
 
 function fetchCities() {
   var weatherTest = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b"
   var mainForecast = document.getElementById("forecast-main");
   mainForecast.innerHTML = "";
-
-  if (cityList.indexOf(city) == -1) {
-  cityList.push(city);
-   localStorage.setItem("cities", JSON.stringify(cityList));
-  console.log(cityList);
+  if (cityList === null) {
+    var newList = []
+    newList.push(city);
+    localStorage.setItem("cities", JSON.stringify(newList));
+  } 
+  else {
+    cityList.push(city);
+    localStorage.setItem("cities", JSON.stringify(cityList));
+    console.log(cityList);
   }
-
   fetch(weatherTest)
   .then(function (response) {
     return response.json();
@@ -78,7 +72,6 @@ function fetchCities() {
     var heading = document.createElement("h1");
     heading.innerHTML = "Weather Forecast for  " + cityName + ": " 
     mainForecast.appendChild(heading);
-
     var weatherTwo = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=710fb85e67050a5a7ccb882b71cd1e8b";
     fetch(weatherTwo)
       .then(function (response) {
@@ -96,11 +89,11 @@ function fetchCities() {
         console.log(data.current.weather[0].description)
         console.log(data.current.uvi)
         console.log(data.current.wind_speed)
-      
-        //current weather
-      
+
+      //current weather
       var forecastCard = document.createElement("div");
       forecastCard.classList.add("card");
+      forecastCard.classList.add("forecast")
       mainForecast.appendChild(forecastCard);
       var currentIconCall = data.current.weather[0].icon;
       var currentIcon = document.createElement("img");
@@ -119,10 +112,26 @@ function fetchCities() {
       var currentConditions = data.current.weather[0].description;
       var currentHumidity = data.current.humidity;
       var currentUvi = data.current.uvi;
-      currentWeather.textContent = currentConditions + ", " + currentTemperature + "°C, Humidity: " + currentHumidity + "%, Wind Speed: " + currentWind + "km/h, UV Index: " + currentUvi;
-      
+      currentUv = document.createElement("p");
+        if (currentUvi <= 2) {
+          currentUv.classList.add("uv-low");
+        } else if (currentUvi > 2 || currentUvi <= 5.99) {
+          currentUv.classList.add("uv-moderate");
+        } else if (currentUvi > 6 || currentUvi <= 7.99) {
+          currentUv.classlList.add("uv-high");
+        } else if (currentUvi > 8 || currentUvi <= 10.99) {
+          currentUv.classList.add("uv-very-high") 
+        } else {
+          currentUv.classList.add("uv-extreme")
+        }
+        forecastCard.appendChild(currentUv);
+      currentWeather.textContent = currentConditions + ", " + currentTemperature + "°C, Humidity: " + currentHumidity + "%, Wind Speed: " + currentWind + "km/h,";
+      currentUv.textContent = "UV Index: " + currentUvi;
       //5-day forecast
         for (i=0; i<5; i++) {
+          var futureCard = document.createElement("div");
+          futureCard.classList.add("card");
+          futureCard.classList.add("future-forecast");
           var weatherInfo = document.createElement("p");
           var temperatureList = document.createElement("p");
           var dateSpot = document.createElement("h3");
@@ -134,6 +143,18 @@ function fetchCities() {
           weatherIcon.setAttribute("width", "50px");
           var weatherDescription = data["daily"][i].weather[0].description;
           var uvi = data["daily"][i].uvi;
+          var futureUvi = document.createElement("p");
+          if (uvi <= 2) {
+            futureUvi.classList.add("uv-low");
+          } else if (uvi <= 2 || uvi <= 5.99) {
+            futureUvi.classList.add("uv-moderate");
+          } else if (uvi <= 6 || uvi <= 7.99) {
+            futureUvi.classList.add("uv-high");
+          } else if (uvi <= 8 || uvi <= 10.99) {
+            futureUvi.classList.add("uv-very-high") 
+          } else {
+            futureUvi.classList.add("uv-extreme")
+          }
           var dailyTemperature = data["daily"][i].temp.day;
           var lowTemperature = data["daily"][i].temp.min;
           var highTemperature = data["daily"][i].temp.max;
@@ -143,13 +164,13 @@ function fetchCities() {
           dateSpot.innerHTML = "Forecast for " + forecastDate;
           forecastCard.appendChild(weatherIcon);
           forecastCard.appendChild(weatherInfo);
-          weatherInfo.textContent = weatherDescription + ", Humidity: " + humidity + "%, Wind Speed: " + windSpeed + "km/h, UV Index: " + uvi;
+          weatherInfo.textContent = weatherDescription + ", Humidity: " + humidity + "%, Wind Speed: " + windSpeed + "km/h";
           forecastCard.appendChild(temperatureList);
           temperatureList.textContent = "Temperature: " + dailyTemperature + "°C, High: " + highTemperature + "°C, Low: " + lowTemperature + "°C";
-        }
+          forecastCard.appendChild(futureUvi);
+          futureUvi.textContent = "UV Index: " + uvi}
   });
 });
 }
+window.addEventListener("load", saveSearches);
 
-
-window.addEventListener ("load", saveSearches);

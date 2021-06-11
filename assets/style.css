@@ -1,0 +1,56 @@
+
+body {
+    background-color: cornsilk;
+}
+
+.jumbotron {
+    background-image: url(IMG_3815.JPG);
+    background-size: cover;
+    min-height: 300px;
+    color:blanchedalmond;
+}
+
+.forecast {
+    margin:auto;
+    max-width: 800px;
+    background-color: rgb(252, 250, 244);
+    border: solid gray 1px;
+    border-radius: 10px;
+}
+
+.uv-low {
+    max-width: 75px;
+    max-height: 75px;
+    border: solid gray 1px;
+    border-radius: 5px;
+    background-color: rgb(5, 179, 5);
+}
+.uv-moderate {
+    max-width: 75px;
+    max-height: 75px;
+    border: solid gray 1px;
+    border-radius: 5px;
+    background-color: rgb(255, 252, 60);
+}
+.uv-high {
+    max-width: 75px;
+    max-height: 75px;
+    border: solid gray 1px;
+    border-radius: 5px;
+    background-color: orange;
+}
+.uv-very-high {
+    max-width: 75px;
+    max-height: 75px;
+    border: solid gray 1px;
+    border-radius: 5px;
+    background-color: red;
+}
+.uv-extreme {
+    max-width: 75px;
+    max-height: 75px;
+    border: solid gray 1px;
+    border-radius: 5px;
+    background-color: rgb(190, 33, 221);
+    
+}
